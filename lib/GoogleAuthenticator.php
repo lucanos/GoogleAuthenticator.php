@@ -63,10 +63,10 @@ class GoogleAuthenticator {
         return $val2[1];
     }
     
-    public function getUrl($user, $hostname, $secret) {
-        $url =  sprintf("otpauth://totp/%s@%s?secret=%s", $user, $hostname, $secret);
-        $encoder = "https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=";
-        $encoderURL = sprintf( "%sotpauth://totp/%s@%s&secret=%s",$encoder, $user, $hostname, $secret);
+    public function getUrl( $user , $hostname , $secret , $label=false , $issuer=false ) {
+        $optauthURL =  sprintf( "otpauth://totp/%s%s@%s?secret=%s%s" , ( $label ? $label.':' : '' ) , $user , $hostname , $secret , ( $issuer ? '&issuer='.$issuer : '' ) );
+        $encoder = "https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=%s";
+        $encoderURL = sprintf( $encoder , urlencode( $optauthURL ) );
         
         return $encoderURL;
         
