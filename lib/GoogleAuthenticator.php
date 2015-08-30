@@ -22,11 +22,11 @@ class GoogleAuthenticator {
 	static $SECRET_LENGTH = 10;
 
 	public function __construct() {
-		self::$PIN_MODULO = pow( 10, self::$PASSCODE_LENGTH);
+		self::$PIN_MODULO = pow( 10, self::$PASSCODE_LENGTH );
 	}
 
 	public function checkCode( $secret, $code ) {
-		$time = floor( time() / 30 );
+		$time = floor( time() / self::$PASSCODE_LIFE );
 		for ( $i = -1; $i <= 1; $i++ ) {
 			if ( $this->getCode( $secret , $time + $i ) == $code ) {
 				return true;
@@ -37,12 +37,12 @@ class GoogleAuthenticator {
 
 	public function getCode( $secret, $time = null ){
 		if ( !$time ) {
-			$time = floor( time() / 30 );
+			$time = floor( time() / self::$PASSCODE_LIFE );
 		}
 		$base32 = new FixedBitNotation( 5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', true, true );
 		$secret = $base32->decode( $secret );
 
-		$time = pack( "N", $time );
+		$time = pack( 'N', $time );
 		$time = str_pad( $time, 8, chr(0) , STR_PAD_LEFT );
 
 		$hash = hash_hmac( 'sha1', $time, $secret, true );
@@ -60,9 +60,9 @@ class GoogleAuthenticator {
 		return $val2[1];
 	}
 
-	public function getUrl( $user , $hostname , $secret , $label=false , $issuer=false ) {
-		$optauthURL =  sprintf( "otpauth://totp/%s%s@%s?secret=%s%s" , ( $label ? $label.':' : '' ) , $user , $hostname , $secret , ( $issuer ? '&issuer='.$issuer : '' ) );
-		$encoder = "https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=%s";
+	public function getUrl( $user , $hostname , $secret , $issuer=false ) {
+		$optauthURL =  sprintf( 'otpauth://totp/%s%s@%s?secret=%s%s' , ( $issuer ? $issuer.':' : '' ) , $user , $hostname , $secret , ( $issuer ? '&issuer='.$issuer : '' ) );
+		$encoder = 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=%s';
 		$encoderURL = sprintf( $encoder , urlencode( $optauthURL ) );
 		return $encoderURL;
 	}
@@ -71,7 +71,7 @@ class GoogleAuthenticator {
 		$secret = '';
 		for( $i = 1;  $i<= self::$SECRET_LENGTH; $i++ ) {
 			$c = rand( 0, 255 );
-			$secret .= pack( "c", $c );
+			$secret .= pack( 'c', $c );
 		}
 		$base32 = new FixedBitNotation( 5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', true, true );
 		return  $base32->encode( $secret );
