@@ -26,12 +26,10 @@ class FixedBitNotation {
 	/**
 	* Constructor
 	*
-	* @param integer $bitsPerCharacter Bits to use for each encoded
-	*				character
+	* @param integer $bitsPerCharacter Bits to use for each encoded character
 	* @param string  $chars Base character alphabet
 	* @param boolean $rightPadFinalBits How to encode last character
-	* @param boolean $padFinalGroup Add padding to end of encoded
-	*				output
+	* @param boolean $padFinalGroup Add padding to end of encoded output
 	* @param string  $padCharacter Character to use for padding
 	*/
 	public function __construct( $bitsPerCharacter, $chars = NULL, $rightPadFinalBits = FALSE, $padFinalGroup = FALSE, $padCharacter = '=' ) {
